@@ -1,3 +1,4 @@
+http://www.millwoodonline.co.uk/blog/sinatra-activerecord-postgres-application
 - Install postgresql (FIXME: details)
 - Create user
 - Create database
