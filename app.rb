@@ -37,6 +37,7 @@ use Rack::Parser, :content_types => {
   'application/json'  => Proc.new { |body| ::MultiJson.decode body }
 }
 
+# Debugging output middleware
 before do
   puts '[Params]'
   p params
@@ -72,19 +73,36 @@ post "/settings" do
 end
 
 get "/settings" do
+  @settings = Setting.order("created_at DESC")
+  content_type :json
+  @settings.to_json
+end
+
+get "/settings/:id" do
+  @setting = Setting.find_by(id: params[:id])
+  content_type :json
+  @setting.to_json
 end
 
 post "/tweet" do
+  @tweets = Setting.new(params)
+  @tweets.save
 end
 
 get "/reports" do
   # FIXME: Allow query params for searching
   # List of available reports by ID
+  @reports = Report.order("created_at DESC")
+  content_type :json
+  @reports.to_json
 end
 
-get "/reports/:id" do # FIXME: use a regex to make sure this is a number, so it doesn't conflict with "current"
+get %r{/reports/([\d]+)} do |id|
   # Specific report by ID
-  @note = Note.find_by_id(params[:id])
+  puts 'get reports by id'
+  @report = Report.find_by(id: id)
+  content_type :json
+  @report.to_json
 end
 
 get "/reports/current" do
