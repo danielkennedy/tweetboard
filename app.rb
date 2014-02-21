@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'rack/parser'
 
 db = URI.parse('postgres://tweetboard:tweetboard@localhost/tweetboard')
 
@@ -12,7 +13,13 @@ ActiveRecord::Base.establish_connection(
   :encoding => 'utf8'
 )
 
-class Note < ActiveRecord::Base
+class Report < ActiveRecord::Base
+end
+
+class Tweet < ActiveRecord::Base
+end
+
+class Setting < ActiveRecord::Base
 end
 
 def generate_report
@@ -26,9 +33,22 @@ def generate_report
   # Nuke the tweets caching table
 end
 
+use Rack::Parser, :content_types => {
+  'application/json'  => Proc.new { |body| ::MultiJson.decode body }
+}
+
+before do
+  puts '[Params]'
+  p params
+end
+
 get "/" do
-  @notes = Note.order("created_at DESC")
-  redirect "/new" if @notes.empty?
+  # If we have settings, load the reports view
+  # If we don't have settings, load the settings view
+  @tweets = Tweet.order("created_at DESC")
+  @settings = Setting.order("created_at DESC")
+  @reports = Report.order("created_at DESC")
+  #redirect "/new" if @notes.empty?
   erb :index
 end
 
@@ -39,12 +59,16 @@ end
 # GET /report (browser get current score or, optionally, historical ones)
 
 post "/settings" do
-  @note = Note.new(params[:note])
-  if @note.save
-    redirect "note/#{@note.id}"
-  else
-    erb :new
-  end
+  # Should have 
+  @settings = Setting.new(params)
+  @settings.save
+  #if @note.save
+    #redirect "note/#{@note.id}"
+  #else
+    #erb :new
+  #end
+  content_type :json
+  params.to_json
 end
 
 get "/settings" do

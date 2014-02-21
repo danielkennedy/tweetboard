@@ -24,6 +24,8 @@ GEM
     multi_json (1.8.4)
     pg (0.17.1)
     rack (1.5.2)
+    rack-parser (0.6.0)
+      rack
     rack-protection (1.5.2)
       rack
     sinatra (1.4.4)
@@ -44,5 +46,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   pg
+  rack-parser
   sinatra
   sinatra-activerecord
