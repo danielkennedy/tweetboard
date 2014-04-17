@@ -31,13 +31,13 @@ process.on('SIGINT', function() {
 });
 
 var tweetSchema = mongoose.Schema({
-  tweet_text:      String,
-  tweet_name:      String,
-  tweet_time:      Date,
-  tweet_followers: Number,
-  tweet_retweets:  Number,
-  sentiment_type:  String,
-  sentiment_score: Number
+  text:      String,
+  name:      String,
+  time:      Date,
+  followers: Number,
+  retweets:  Number,
+  type:      String,
+  score:     Number
 });
 
 var Tweet = mongoose.model('Tweet', tweetSchema);
@@ -56,6 +56,7 @@ exports.create = function(req, res){
       type:      req.body.type,
       score:     req.body.score
     }, function (err, tweet) {
+      console.log('CREATE:', err, tweet);
       var code = 200;
       if (err) {
         code = 500;
