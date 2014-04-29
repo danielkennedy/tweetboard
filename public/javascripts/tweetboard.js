@@ -1,6 +1,6 @@
 $(document).ready(function() { 
   console.log('Doc is ready');
-  $('#modalSignitButton').click(function () {
+  $('#submitButton').click(function () {
     $('#signupForm').ajaxSubmit({
       beforeSubmit: showRequest,
       success: showResponse,
